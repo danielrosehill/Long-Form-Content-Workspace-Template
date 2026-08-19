@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.DS_Store
+.venv/
+
+# Assembled output is a build product of book.toml + manuscript/. Regenerate it
+# with `python3 scripts/book.py assemble` rather than committing drift.
+dist/manuscript.md
+dist/manuscript.json
+dist/*.pdf

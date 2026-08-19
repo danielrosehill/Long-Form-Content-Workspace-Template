@@ -1,0 +1,31 @@
+# Body typesetting profile — Lulu, Crown Quarto.
+#
+# This file describes how the *text* is set: measure, type sizes, leading.
+# It deliberately does not describe trim, gutter, spine or bleed. Those are
+# print geometry and belong to the production handoff plugin, which computes
+# them from the finished interior rather than from a value written here.
+
+[profile]
+name    = "lulu-crown-quarto"
+channel = "lulu"
+trim    = "7.44in x 9.68in"   # informational; geometry is the handoff's to own
+
+[measure]
+# The measure is the constraint that matters for authoring, because it decides
+# the maximum code line length the style guide enforces. Re-derive that cap if
+# this or mono_size changes; do not carry it forward as a convention.
+text_width = "5.62in"
+
+[type]
+body_family = "Source Serif 4"
+body_size   = "10.5pt"
+leading     = "15pt"
+mono_family = "JetBrains Mono"
+mono_size   = "8.5pt"
+head_family = "Inter"
+
+[features]
+parts          = true
+running_heads  = true
+drop_caps      = false
+figure_numbers = true

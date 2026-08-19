@@ -1,0 +1,28 @@
+# Body typesetting profile — KDP, 6x9in, the most common POD paperback size.
+#
+# Text setting only. Trim, gutter, spine and cover wrap belong to the production
+# handoff plugin. See lulu-crown-quarto.toml for why.
+
+[profile]
+name    = "kdp-6x9"
+channel = "kdp"
+trim    = "6in x 9in"
+
+[measure]
+# Narrower measure than Crown Quarto, so the code line cap is lower. A book
+# authored against the Crown Quarto cap will wrap its listings here.
+text_width = "4.25in"
+
+[type]
+body_family = "Source Serif 4"
+body_size   = "10pt"
+leading     = "14pt"
+mono_family = "JetBrains Mono"
+mono_size   = "8pt"
+head_family = "Inter"
+
+[features]
+parts          = true
+running_heads  = true
+drop_caps      = false
+figure_numbers = true

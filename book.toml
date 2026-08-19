@@ -1,0 +1,75 @@
+# Book manifest — the single source of truth for this book's structure.
+#
+# Every script, skill and agent reads structure from here. Nothing else defines
+# what chapters exist, what order they are in, or how far along each one is.
+# If you find a second document describing the structure, delete it.
+#
+# The manifest is deliberately thin. It carries structure, status and pointers.
+# The *substance* of a chapter lives in its brief (outline/briefs/<id>-<slug>.md),
+# because a brief is prose an agent reads and a manifest field is not.
+
+[book]
+title       = "Untitled Book"
+subtitle    = ""
+author      = ""
+kind        = "reference"        # reference | instructional | handbook | field-guide | survey
+audience    = ""                 # who reads this, in one line, concretely
+promise     = ""                 # what the reader can do afterwards that they could not before
+word_target = 45000
+status      = "intake"           # intake | spec | outline | drafting | review | graphics | production | shipped
+
+# Facts in a reference work decay. Record the date the content is true as of;
+# it goes in the colophon and it is what a reader is entitled to know.
+snapshot_date = ""
+
+[production]
+# Concatenation and body typesetting happen here. Print geometry — trim, gutter,
+# spine, cover wrap, pre-flight — is NOT this project's job. It is handed off.
+profile  = "lulu-crown-quarto"   # a file in typeset/profiles/
+handoff  = "kdp-publishing"      # plugin that owns print geometry; "" to keep it local
+channels = ["lulu"]              # lulu | kdp | none
+
+[voice]
+style_guide          = "guides/style-guide.md"
+graphics_style_guide = "guides/graphics-style-guide.md"
+
+# ---------------------------------------------------------------------------
+# Parts
+# ---------------------------------------------------------------------------
+# Parts exist to give the reader a place to stand, not to fill a page. A book
+# with fewer than three parts should have none.
+
+[[part]]
+id      = "one"
+title   = "Example Part"
+premise = "What this group of chapters establishes, in one sentence."
+
+# ---------------------------------------------------------------------------
+# Chapters
+# ---------------------------------------------------------------------------
+# status: planned -> briefed -> researched -> drafted -> reviewed -> final
+#
+#   planned     in the outline, nothing written
+#   briefed     outline/briefs/<id>-<slug>.md exists and is complete
+#   researched  research notes gathered; the writer has what it needs
+#   drafted     manuscript/<id>-<slug>.md exists as full prose
+#   reviewed    review team has passed it and findings are resolved
+#   final       locked; changing it means re-running the continuity pass
+#
+# establishes / requires are the continuity contract. A chapter may only rely
+# on a key some earlier chapter establishes. The linter enforces the ordering,
+# which is the cheapest defence there is against a subagent re-explaining a
+# term in chapter 12 that chapter 3 already defined.
+
+[[chapter]]
+id          = "ch01"
+part        = "one"
+slug        = "example-chapter"
+title       = "Example Chapter"
+brief       = "outline/briefs/ch01-example-chapter.md"
+word_target = 3200
+status      = "planned"
+research    = []                 # research/notes/*.md this chapter depends on
+figures     = []                 # graphics/specs/*.md rendered inside it
+establishes = []                 # continuity keys introduced here for the first time
+requires    = []                 # continuity keys that must already exist
