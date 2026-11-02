@@ -1,18 +1,18 @@
-# Book manifest — the single source of truth for this book's structure.
+# Project manifest — the single source of truth for this work's structure.
 #
 # Every script, skill and agent reads structure from here. Nothing else defines
-# what chapters exist, what order they are in, or how far along each one is.
+# what units (chapters, report sections, screenplay sequences) exist, what order they are in, or how far along each one is.
 # If you find a second document describing the structure, delete it.
 #
 # The manifest is deliberately thin. It carries structure, status and pointers.
 # The *substance* of a chapter lives in its brief (outline/briefs/<id>-<slug>.md),
 # because a brief is prose an agent reads and a manifest field is not.
 
-[book]
-title       = "Untitled Book"
+[project]
+title       = "Untitled"
 subtitle    = ""
 author      = ""
-kind        = "reference"        # reference | instructional | handbook | field-guide | survey
+kind        = "reference"        # reference | instructional | handbook | field-guide | survey | research-report | narrative | feature | series-episode
 audience    = ""                 # who reads this, in one line, concretely
 promise     = ""                 # what the reader can do afterwards that they could not before
 word_target = 45000
@@ -22,12 +22,49 @@ status      = "intake"           # intake | spec | outline | drafting | review |
 # it goes in the colophon and it is what a reader is entitled to know.
 snapshot_date = ""
 
+[output]
+# What the manuscript becomes. Definition, planning, drafting and review are the
+# same for every type; only the end of the chain differs.
+#   book        typeset body -> [production] handoff (print geometry)
+#   report      long-form research report -> dist/report.pdf (pandoc + typst)
+#   screenplay  units are Fountain (.fountain) -> dist/screenplay.fountain / .pdf
+#   audiobook   manuscript -> spoken script -> per-chapter TTS -> dist/audiobook.m4b
+type = "book"
+# export_cmd      = ""           # report/screenplay: override the PDF step; {input} {output}
+# toc             = true         # report
+# number_sections = true         # report
+# pdf_engine      = "typst"      # report
+# mainfont        = "Libertinus Serif"   # report, typst engine
+# bibliography    = "research/references.bib"   # report; used with --citeproc if present
+
 [production]
 # Concatenation and body typesetting happen here. Print geometry — trim, gutter,
 # spine, cover wrap, pre-flight — is NOT this project's job. It is handed off.
 profile  = "lulu-crown-quarto"   # a file in typeset/profiles/
 handoff  = "kdp-publishing"      # plugin that owns print geometry; "" to keep it local
 channels = ["lulu"]              # lulu | kdp | none
+
+[audio]
+# Read only when [output] type = "audiobook".
+format           = "plain"      # plain | ssml — what the TTS engine expects per chapter
+voice            = ""           # engine voice id; recorded in dist/audiobook.json
+narrator         = ""           # credited narrator (tag: composer)
+words_per_minute = 155          # duration estimates in `status`
+# One shell command that turns one chapter script into one audio file. Any engine.
+# Placeholders: {input} {output} {id} {title} {voice} (already shell-quoted).
+render_cmd       = ""
+render_ext       = "mp3"
+gap_seconds      = 2.0          # silence between chapters
+sample_rate      = 44100
+channels         = 1            # mono is the audiobook norm
+bitrate          = "64k"
+loudness_lufs    = -19          # integrated loudness target; "" to skip normalisation
+container        = "m4b"
+chapter_title_format = "{n}. {title}"
+genre            = "Audiobook"
+cover            = ""           # square image, embedded as cover art
+intro            = ""           # optional bumper before chapter 1
+outro            = ""
 
 [voice]
 style_guide          = "guides/style-guide.md"
@@ -47,6 +84,9 @@ premise = "What this group of chapters establishes, in one sentence."
 # ---------------------------------------------------------------------------
 # Chapters
 # ---------------------------------------------------------------------------
+# A [[chapter]] is the unit of delegation: a chapter, a report section, or a
+# screenplay sequence (a run of scenes one writer can own).
+#
 # status: planned -> briefed -> researched -> drafted -> reviewed -> final
 #
 #   planned     in the outline, nothing written

@@ -3,8 +3,11 @@ __pycache__/
 .DS_Store
 .venv/
 
-# Assembled output is a build product of book.toml + manuscript/. Regenerate it
-# with `python3 scripts/book.py assemble` rather than committing drift.
-dist/manuscript.md
-dist/manuscript.json
-dist/*.pdf
+# Assembled output is a build product of longform.toml + manuscript/. Regenerate
+# it with `python3 scripts/longform.py assemble` rather than committing drift.
+dist/*
+!dist/.gitkeep
+
+# Rendered audio is reproducible from audio/script/ and too large for git.
+# Keep the scripts; regenerate the audio with `longform.py render`.
+audio/chapters/

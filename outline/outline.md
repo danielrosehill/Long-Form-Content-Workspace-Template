@@ -4,7 +4,7 @@
 > the map a human co-author reads. It is not a preface, not an appendix, and not
 > chapter zero. Nothing in `outline/` appears in `dist/`.
 
-Structure of record is `book.toml`. This document carries the *reasoning* the
+Structure of record is `longform.toml`. This document carries the *reasoning* the
 manifest cannot: why the chapters are in this order, what each one is for, and
 where the boundaries between them sit.
 

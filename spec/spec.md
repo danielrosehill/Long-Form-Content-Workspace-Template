@@ -6,7 +6,13 @@
 
 **Settled:** <YYYY-MM-DD>
 
-## The book in one sentence
+## Output type
+
+<!-- book | report | screenplay | audiobook — mirrors [output] type in longform.toml.
+     An audiobook made from a book is a second workspace type setting, not a
+     second project: the manuscript is shared, the end of the chain differs. -->
+
+## The work in one sentence
 
 <!-- If this takes two sentences the book is not scoped yet. -->
 
@@ -52,7 +58,17 @@
 
 ## Form factor
 
-- **Channel:** Lulu / KDP / PDF only
-- **Trim:**
-- **Colour interior:** yes / no  <!-- changes cost per page substantially -->
-- **Figures:** roughly how many, and of what kind
+<!-- Fill the block for this work's type; delete the others. -->
+
+**book** — Channel: Lulu / KDP · Trim: · Colour interior: yes / no (changes cost
+per page substantially) · Figures: roughly how many, of what kind
+
+**report** — Page size: A4 / Letter · Citations: footnotes / author-date ·
+Executive summary: yes / no · Figures and tables:
+
+**screenplay** — Format: feature / episode / short · Target runtime (about one
+page a minute) · Act structure:
+
+**audiobook** — Target duration (about 155 words a minute) · Narrator voice and
+engine · Single narrator or several · Plain text or SSML · Companion PDF for
+what the ear cannot carry (tables, links, figures): yes / no

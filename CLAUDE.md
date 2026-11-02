@@ -1,55 +1,87 @@
-# Working in this book workspace
+# Working in this long-form content workspace
 
 Directives for any agent operating in this repository. The reasoning behind them
-is in [Agentic-Book-Writing](https://github.com/danielrosehill/Agentic-Book-Writing);
+is in [Agentic-Long-Form-Content](https://github.com/danielrosehill/Agentic-Long-Form-Content);
 this is what to *do*.
+
+## What this workspace makes
+
+One work, of the type set in `[output] type` in `longform.toml`:
+
+| Type | Unit of delegation | Ends as |
+| --- | --- | --- |
+| `book` | chapter | `dist/manuscript.md` → print-geometry handoff |
+| `report` | section | `dist/report.pdf` (pandoc + typst) |
+| `screenplay` | sequence (a run of scenes one writer owns), Fountain | `dist/screenplay.fountain` / `.pdf` |
+| `audiobook` | chapter | `dist/audiobook.m4b`, chaptered and tagged |
+
+Definition, planning, drafting and review are identical for all four. Only the
+production stage branches. "Chapter" below means the unit, whatever the type.
 
 ## The constraint everything here answers to
 
-A book does not fit in a context window, and quality degrades long before the
-window fills. Every rule below exists to keep each agent's working set small
-enough that it never reaches the part of the window where it starts producing
-plausible filler.
+A long work does not fit in one agent's attention, and quality degrades long
+before the context window fills. Every rule below exists to keep each agent's
+working set small enough that it never reaches the part of the window where it
+starts producing plausible filler.
 
-That means the expensive resource being managed is **not tokens, it is
-attention**. An agent that has read nine chapters to write the tenth will write
-a worse tenth chapter than one that read a two-page brief.
+The expensive resource being managed is **not tokens, it is attention**. An agent
+that has read nine chapters to write the tenth will write a worse tenth chapter
+than one that read a two-page brief.
 
 ## Source-of-truth documents
 
-Five, and only five. Nothing else defines the book. If you find a sixth document
-describing structure, voice or scope, it is drift — fold it into one of these and
-delete it.
+Nothing else defines the work. If you find another document describing
+structure, voice or scope, it is drift — fold it into one of these and delete it.
 
 | Document | Owns | Read by |
 | --- | --- | --- |
-| `book.toml` | Structure, status, targets, continuity keys | every script and agent |
-| `spec/spec.md` | What the book is, who it is for, what it must not become | planning, review |
-| `guides/style-guide.md` | Prose voice, register, conventions | every writing and review agent |
-| `guides/graphics-style-guide.md` | Visual language | every graphics agent |
-| `outline/outline.md` + `outline/briefs/` | The plan and the per-chapter contracts | planning, writing |
+| `longform.toml` | Type, structure, status, targets, continuity keys, audio settings | every script and agent |
+| `spec/spec.md` | What the work is, who it is for, what it must not become | planning, review |
+| `guides/style-guide.md` | Voice, register, conventions (and the spoken rules for an audiobook) | every writing and review agent |
+| `guides/graphics-style-guide.md` | Visual language (book, report) | every graphics agent |
+| `guides/pronunciation.md` | How names, acronyms and figures are said (audiobook) | narration adapters, script-lint |
+| `outline/outline.md` + `outline/briefs/` | The plan and the per-unit contracts | planning, writing |
 
-**The outline never ships.** It is scaffolding for the agents and for a human
-co-author. It is not a chapter, not an appendix, and not a preface. Nothing in
-`outline/` appears in `dist/`.
+**The outline never ships.** Nothing in `outline/` appears in `dist/`.
 
 ## What each agent may read
 
-This is the whole architecture. Violating it is how books written by agents come
-out repetitive and tonally inconsistent.
+This is the whole architecture. Violating it is how agent-written long-form work
+comes out repetitive and tonally inconsistent.
 
 | Agent | Reads | Never reads |
 | --- | --- | --- |
-| Chapter writer | Its own brief, the style guide, its research notes, the neighbour summaries in the outline | Other chapters' drafts |
+| Chapter writer | Its own brief, the style guide, its research notes, the ledger | Other chapters' drafts |
 | Researcher | The brief it was given, external sources | Drafts |
-| Proofreader | One chapter, the style guide | The rest of the book |
+| Proofreader | One chapter, the style guide | The rest of the work |
 | Voice auditor | Samples across chapters, the style guide | Full drafts of everything |
 | Continuity auditor | `lint --json`, chapter summaries, the continuity ledger | Full drafts of everything |
-| Publication | `dist/`, the profile | Briefs, research |
+| Seam reviewer | One `review/seams/<a>__<b>.md` file | Anything else in `manuscript/` |
+| Narration adapter | One chapter's manuscript, style guide, pronunciation lexicon | Other chapters |
+| Publication | `dist/`, the profile or `[audio]` | Briefs, research |
 
-A chapter writer that reads the previous chapter will *echo* it — restating its
-setup, borrowing its examples, repeating its transitions. Cross-chapter
-consistency is bought with the brief and the continuity ledger, not with reading.
+A writer that reads the previous chapter will *echo* it — restating its setup,
+borrowing its examples, repeating its transitions. Cross-chapter consistency is
+bought with the brief and the continuity ledger, not with reading.
+
+## Seams
+
+The price of writers who never read each other is paid at the joins. A seam is
+where chapter N ends and N+1 begins, and it is where this kind of work breaks
+most: N+1 re-introduces what N just said, both sides recap or preview, N+1 opens
+from a state N never left the reader in, or the register jumps.
+
+- Every brief has a **Seams** section: what it picks up from, what it hands off
+  to. The outline-architect writes both sides of every join.
+- `python3 scripts/longform.py seams` cuts each join into
+  `review/seams/<a>__<b>.md`. One `seam-reviewer` per file, in parallel.
+- Findings go to `review/seams/<a>__<b>.review.md`, addressed to one side or to
+  the outline. Fixes are made by the chapter's writer, at the edge only.
+- `lint` warns when both sides of a seam are `reviewed` but the seam has no
+  review, or when the review predates an edit to either side.
+- Audiobooks get a second seam pass on the spoken scripts
+  (`seams --layer script`), because adaptation adds openings and closings.
 
 ## Parallelism
 
@@ -57,45 +89,44 @@ Chapter writers run in parallel. This is safe when, and only when, two chapters
 do not draw on the same source material for the same purpose. Two agents given
 the same source will describe it differently and both descriptions will ship.
 
-Before dispatching a batch, check the `research` and `establishes` fields in
-`book.toml`. Chapters that share a research note or establish related keys go in
-**different batches**, sequentially.
+Before dispatching a batch, check `research` and `establishes` in
+`longform.toml`. Chapters that share a research note or establish related keys
+go in **different batches**, sequentially.
 
-Writers never write outside `manuscript/<their chapter>.md`. Reviewers never
-edit prose; they write findings to `review/reports/` and the writer applies them.
+Writers never write outside `manuscript/<their chapter>`. Reviewers never edit
+prose; they write findings and the writer applies them.
 
 ## Continuity
 
-`continuity.md` is the ledger: every term, figure and claim the book has
-established, with the chapter that established it. It is the only mechanism by
-which chapter 12 knows what chapter 3 already said.
+`continuity.md` is the ledger: every term, figure, claim, character, location
+and timeline fact the work has established, with the chapter that established
+it. It is the only mechanism by which chapter 12 knows what chapter 3 said.
 
-- A chapter may only `require` a key that an **earlier** chapter `establishes`.
-  `book.py lint` enforces the ordering.
-- When a writer defines a term, it goes in the ledger in the same turn. A term
-  defined in prose but absent from the ledger will be defined again later.
+- A chapter may only `require` a key an **earlier** chapter `establishes`.
+  `lint` enforces the ordering.
+- When a writer establishes something, it goes in the ledger in the same turn.
 
 ## Facts
 
-Reference works are read for their facts and are worthless when the facts are
-wrong.
-
 - A writer that needs a fact it cannot reach leaves `[VERIFY: what is needed]`.
-  It does not guess and it does not soften the claim to something safe.
-- `lint` treats those markers as warnings while drafting and as **errors** once a
-  chapter is `reviewed` or `final`.
-- `snapshot_date` in `book.toml` is the date the content is true as of. Print is
-  not editable. Say so in the colophon.
+  It does not guess and does not soften the claim to something safe.
+- `lint` treats markers as warnings while drafting and **errors** once a chapter
+  is `reviewed` or `final`. `script-lint` treats them as errors always: a
+  marker read aloud ships.
+- `snapshot_date` is the date the content is true as of.
 
 ## Commands
 
 ```bash
-python3 scripts/book.py status              # what is drafted, what is not
-python3 scripts/book.py status --json       # same, machine-readable
-python3 scripts/book.py scaffold            # stub briefs and manuscripts from the manifest
-python3 scripts/book.py lint                # mechanical gates
-python3 scripts/book.py lint --strict       # warnings become errors; run before production
-python3 scripts/book.py assemble            # concatenate to dist/manuscript.md + .json
+python3 scripts/longform.py status              # what is drafted, what is not
+python3 scripts/longform.py scaffold            # stub briefs and manuscripts
+python3 scripts/longform.py lint [--strict]     # mechanical gates
+python3 scripts/longform.py seams [--layer script]   # cut joins for the seam reviewers
+python3 scripts/longform.py assemble            # concatenate to dist/
+python3 scripts/longform.py export              # report / screenplay → PDF
+python3 scripts/longform.py script-lint         # audiobook: unspeakable text
+python3 scripts/longform.py render [--only ch03]     # audiobook: TTS per chapter, resumable
+python3 scripts/longform.py audio-assemble      # audiobook: join, marks, tags, loudness
 ```
 
 Output goes to `dist/`, never `build/` — a global gitignore excludes `build/`.
@@ -103,19 +134,18 @@ Output goes to `dist/`, never `build/` — a global gitignore excludes `build/`.
 ## What lint cannot do
 
 It checks that a source is cited, not that the source says what the chapter
-claims. It checks that a figure has a spec, not that the figure shows what the
-spec describes. It cannot tell whether a chapter delivered the argument its brief
-promised, and it cannot hear voice drift.
-
-Read the drafted chapters yourself. A clean lint means the mechanical failures
-are absent, not that the book is good.
+claims. It cannot tell whether a chapter delivered its brief's argument, hear
+voice drift, or judge whether a seam reads as one work. Read the work yourself.
+A clean lint means the mechanical failures are absent, not that the work is good.
 
 ## Production boundary
 
-This repository owns the manuscript: text, structure, figures, assembly.
+This repository owns the text: structure, figures, assembly, and for an
+audiobook the spoken script, rendering and the finished file.
 
-It does **not** own print geometry. Trim, gutter, spine width, cover wrap and
-pre-flight belong to the plugin named in `[production] handoff` — by default
-`kdp-publishing`, which builds the cover last from the interior's measured
-extent. Do not reimplement any of that here. `assemble` writes
-`dist/manuscript.json` for it to consume.
+- **book:** print geometry (trim, gutter, spine, cover wrap, pre-flight) belongs
+  to the plugin in `[production] handoff`, default `kdp-publishing`. Do not
+  reimplement it. `assemble` writes `dist/manuscript.json` for it.
+- **audiobook:** the TTS engine is whatever `[audio] render_cmd` calls. The
+  workspace does not know or care which; it passes one script file in and
+  expects one audio file out.

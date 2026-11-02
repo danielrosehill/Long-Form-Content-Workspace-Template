@@ -67,3 +67,46 @@ Fixed terms, decided once, used everywhere. Add rows as the book establishes the
 - A figure earns its place by showing a mechanism prose would take a page to
   describe. Decorative illustration is out.
 - Referenced from prose with `::: figure <id>`, spec at `graphics/specs/<id>.md`.
+
+## Type-specific rules
+
+Keep the block for this work's `[output] type`; delete the others.
+
+### report
+
+- Numbered sections; section titles state findings, not topics.
+- Every factual claim cites a source in `research/sources.md` (or the
+  bibliography). Author-date or footnotes: <choose one>.
+- Opens with an executive summary written **last**, from the finished sections.
+
+### screenplay
+
+- Fountain. Scene headings `INT./EXT. PLACE - TIME`, character cues in caps,
+  parentheticals sparingly, transitions only where the cut means something.
+- Action lines in present tense, what can be seen or heard. No camera
+  direction unless it is the point.
+- Each character's speech patterns are fixed in `continuity.md` → Characters,
+  and checked there, not by reading other sequences.
+
+### audiobook
+
+The manuscript is still written for a reader; the spoken script is adapted from
+it by `narration-adapter`. These rules bind the **manuscript** writer too,
+because some things cannot be adapted away:
+
+- No content that only works visually: tables, figures, "see above". If it
+  matters, say it in a sentence; if it is reference data, it goes in the
+  companion PDF and the text says so once.
+- Signpost structure in words — "three reasons", then "first", "second" — since
+  a listener cannot see the list.
+- Sentences under about thirty-five words; a listener cannot re-read.
+- Each chapter opens by saying where the listener is, in one line, because
+  listeners skip.
+
+And these bind the **spoken script** (`script-lint` checks most of them):
+
+- No digits, symbols, URLs, markdown, brackets or visual references.
+- Every acronym and unusual name is in `guides/pronunciation.md`, and spoken the
+  way it says.
+- The chapter number and title are said aloud at the start, in one fixed form:
+  <e.g. "Chapter three. The cost of quiet.">
